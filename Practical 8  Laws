@@ -1,0 +1,20 @@
+1.Derive the expressions based on Associative Law.
+
+mport random
+a=3
+b=2
+c=7
+print("Associative law")
+print("A+(B+C)-->",(a+(b+c)))
+print("(A+B)+C-->",((a+b)+c))
+
+
+2.Derive the expressions based on Distributive Law
+
+import random
+a=random.randint(0,99)
+b=random.randint(0,99)
+c=random.randint(0,99)
+print("Distributive law")
+print("A(B+C)-->",(a*(b+c)))
+print("(A*B)+(A*C)-->",((a*b)+(a*c)))
