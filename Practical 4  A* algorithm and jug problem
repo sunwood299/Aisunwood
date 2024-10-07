@@ -114,6 +114,14 @@ if __name__ == "__main__":
  main()
 
 
+
+
+
+
+
+
+
+
 2.Solve water jug problem
 
 from collections import defaultdict
