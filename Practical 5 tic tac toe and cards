@@ -82,6 +82,9 @@ print("The Optimal Move is :")
 print("ROW:", bestMove[0], " COL:", bestMove[1])
 
 
+
+
+
 2. Shuffle deck of cards.
 
 Suits = ["\u2663", "\u2665", 
