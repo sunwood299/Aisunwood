@@ -1,33 +1,48 @@
 1. Implement depth first search algorithm
 
-graph = {
-'5': ['3','7'], '3': ['2', '4'], '7': ['8'], '2': [], '4': ['8'], '8': []
-}
-visited = set() 
-def dfs(visited, graph, node): 
-if node not in visited:
-print (node)
-visited.add(node)
-for neighbour in graph[node]:
-dfs(visited, graph, neighbour)
-print("Following is the Depth-First Search")
-dfs(visited, graph, '5')
-
+def dfs(node, graph, visited, component):
+    component.append(node)  
+    visited[node] = True  
+    for child in graph[node]:
+        if not visited[child]:  
+            dfs(child, graph, visited, component)  
+if __name__ == "__main__":
+    graph = {
+        0: [2],
+        1: [2, 3],
+        2: [0, 1, 4],
+        3: [1, 4],
+        4: [2, 3]
+    }
+    node = 0  
+    visited = [False]*len(graph)  
+    component = []
+    dfs(node, graph, visited, component)  
+    print(f"Following is the Depth-first search: {component}")  
+    
 2. Implement breadth first search algorithm
 graph = {
-'5' : ['3','7'],'3' : ['2', '4'],'7' : ['8'],'2' : [],'4' : ['8'], '8' : []
+  '5' : ['3','7'],
+  '3' : ['2', '4'],
+  '7' : ['8'],
+  '2' : [],
+  '4' : ['8'],
+  '8' : []
 }
 visited = [] 
-queue = [] 
+queue = []    
+
 def bfs(visited, graph, node): 
-visited.append(node)
-queue.append(node)
-while queue: 
-m = queue.pop(0) 
-print (m, end = " ") 
-for neighbour in graph[m]:
-if neighbour not in visited:
-visited.append(neighbour)
-queue.append(neighbour)
+  visited.append(node)
+  queue.append(node)
+
+  while queue:          
+    m = queue.pop(0) 
+    print (m, end = " ") 
+
+    for neighbour in graph[m]:
+      if neighbour not in visited:
+        visited.append(neighbour)
+        queue.append(neighbour)
 print("Following is the Breadth-First Search")
-bfs(visited, graph, '5') 
+bfs(visited, graph, '5')
