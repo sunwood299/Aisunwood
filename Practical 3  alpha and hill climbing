@@ -1,112 +1,68 @@
 1.Implement alpha beta search
 
 class Node:
- def __init__(self, name, children=None, value=None):
- self.name = name
- self.children = children if children is not None else []
- self.value = value
-def evaluate(node):
- return node.value
-def is_terminal(node):
- return node.value is not None
-def get_children(node):
- return node.children
-def alpha_beta_pruning(node, depth, alpha, beta, maximizing_player):
- if depth == 0 or is_terminal(node):
- return evaluate(node)
- 
- if maximizing_player:
- max_eval = float('-inf')
- for child in get_children(node):
- eval = alpha_beta_pruning(child, depth-1, alpha, beta, False)
- max_eval = max(max_eval, eval)
- alpha = max(alpha, eval)
- if beta <= alpha:
- break 
- return max_eval
- else:
- min_eval = float('inf')
- for child in get_children(node):
- eval = alpha_beta_pruning(child, depth-1, alpha, beta, True)
- min_eval = min(min_eval, eval)
- beta = min(beta, eval)
- if beta <= alpha:
- break 
- return min_eval
-D = Node('D', value=3)
-E = Node('E', value=5)
-F = Node('F', value=6)
-G = Node('G', value=9)
-H = Node('H', value=1)
-I = Node('I', value=2)
-B = Node('B', children=[D, E, F])
-C = Node('C', children=[G, H, I])
-A = Node('A', children=[B, C])
-maximizing_player = True
-initial_alpha = float('-inf')
-initial_beta = float('inf')
-depth = 3 
-optimal_value = alpha_beta_pruning(A, depth, initial_alpha, initial_beta, maximizing_player)
-print(f"The optimal value is: {optimal_value}")
+    def __init__(self, name, value=None, children=None):
+        self.name = name
+        self.value = value
+        self.children = children if children is not None else []
+
+def alpha_beta(node, depth, alpha, beta, max_player):
+    if depth == 0 or node.value is not None:
+        return node.value
+    if max_player:
+        v = float('-inf')
+        for child in node.children:
+            v = max(v, alpha_beta(child, depth-1, alpha, beta, False))
+            alpha = max(alpha, v)
+            if beta <= alpha:
+                break
+        return v
+    else:
+        v = float('inf')
+        for child in node.children:
+            v = min(v, alpha_beta(child, depth-1, alpha, beta, True))
+            beta = min(beta, v)
+            if beta <= alpha:
+                break
+        return v
+
+A = Node('A', children=[Node('B', children=[Node('D', 3), Node('E', 12)]), Node('C', children=[Node('G', 9), Node('H', 2)])])
+print(alpha_beta(A, 3, float('-inf'), float('inf'), True))
+
 
 2: Implement hill climbing problem.
 
 import random
 import numpy as np
-coordinate = np.array([[1,2], [30,21], [56,23], [8,18], [20,50], [3,4], [11,6], [6,7], [15,20], 
-[10,9], [12,12]])
- 
+
+def distance(p1, p2):
+    return np.linalg.norm(p1 - p2)
+
 def generate_matrix(coordinate):
- matrix = []
- for i in range(len(coordinate)):
- for j in range(len(coordinate)) : 
- p = np.linalg.norm(coordinate[i] - coordinate[j])
- matrix.append(p)
- matrix = np.reshape(matrix, (len(coordinate),len(coordinate)))
- return matrix
- 
-def solution(matrix):
- points = list(range(0, len(matrix)))
- solution = []
- for i in range(0, len(matrix)):
- random_point = points[random.randint(0, len(points) - 1)]
- solution.append(random_point)
- points.remove(random_point)
- return solution
- 
+    return [[distance(p1, p2) for p2 in coordinate] for p1 in coordinate]
+
+def random_solution(matrix):
+    return random.sample(range(len(matrix)), len(matrix))
+
 def path_length(matrix, solution):
- cycle_length = 0
- for i in range(0, len(solution)):
- cycle_length += matrix[solution[i]][solution[i - 1]]
- return cycle_length
- 
-def neighbors(matrix, solution):
- neighbors = []
- for i in range(len(solution)):
- for j in range(i + 1, len(solution)):
- neighbor = solution.copy()
- neighbor[i] = solution[j]
- neighbor[j] = solution[i]
- neighbors.append(neighbor)
- 
- best_neighbor = neighbors[0]
- best_path = path_length(matrix, best_neighbor)
- 
- for neighbor in neighbors:
- current_path = path_length(matrix, neighbor)
- if current_path < best_path:
- best_path = current_path
- best_neighbor = neighbor
- return best_neighbor, best_path
- 
- 
+    return sum(matrix[solution[i-1]][solution[i]] for i in range(len(solution)))
+
 def hill_climbing(coordinate):
- matrix = generate_matrix(coordinate)
- 
- current_solution = solution(matrix)
- current_path = path_length(matrix, current_solution)
- neighbor = neighbors(matrix,current_solution)[0]
+    matrix = generate_matrix(coordinate)
+    current_solution = random_solution(matrix)
+    current_path = path_length(matrix, current_solution)
+    
+    while True:
+        neighbor = random.sample(range(len(matrix)), len(matrix))
+        neighbor_path = path_length(matrix, neighbor)
+        if neighbor_path < current_path:
+            current_solution = neighbor
+            current_path = neighbor_path
+        else:
+            break
+    
+    return current_path, current_solution
 
-
-
-
+coordinate = np.array([[1,2], [30,21], [56,23], [8,18], [20,50], [3,4], [11,6], [6,7], [15,20], [10,9], [12,12]])
+final_solution = hill_climbing(coordinate)
+print("The solution is \n", final_solution[1])
